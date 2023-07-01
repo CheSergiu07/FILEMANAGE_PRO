@@ -5,6 +5,11 @@ import Navigation from './components/Navigation';
 import Home from './components/Home';
 import About from './components/About';
 import Contact from './components/Contact';
+import Upload from './components/Upload';
+import FileList from './components/FileList';
+import FolderList from './components/FolderList';
+
+
 
 class App extends React.Component {
   render() {
@@ -16,6 +21,9 @@ class App extends React.Component {
                   <Route path="/" element={<Home />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
+                  <Route path="/Upload" element={<Upload />} />
+                  <Route path="/files" element={<FileList />} />
+                  <Route path="/folders" element={<FolderList />} />
               </Routes>
           </div>
       );

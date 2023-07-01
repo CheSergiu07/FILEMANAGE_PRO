@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // presupunem că folosești react-router-dom pentru navigare
+import { Link } from 'react-router-dom';
 
 class Navigation extends React.Component {
     render() {
@@ -9,6 +9,9 @@ class Navigation extends React.Component {
                     <li><Link to="/">Home</Link></li>
                     <li><Link to="/about">About</Link></li>
                     <li><Link to="/contact">Contact</Link></li>
+                    <li><Link to="/files">File List</Link></li>
+                    <li><Link to="/folders">Folder List</Link></li>
+                    <li><Link to="/upload">Upload</Link></li>
                 </ul>
             </nav>
         );
@@ -16,3 +19,4 @@ class Navigation extends React.Component {
 }
 
 export default Navigation;
+
