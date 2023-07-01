@@ -1,6 +1,6 @@
+// App.jsx
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
-import HelloWorld from './components/HelloWorld';
+import { Routes, Route } from "react-router-dom";
 import Navigation from './components/Navigation';
 import Home from './components/Home';
 import About from './components/About';
@@ -12,12 +12,11 @@ class App extends React.Component {
           <div>
               <h1>Hello, world!</h1>
               <Navigation />
-              <Switch>
-                  <Route path="/" exact component={Home} />
-                  <Route path="/about" component={About} />
-                  <Route path="/contact" component={Contact} />
-                  <Route component={HelloWorld} />
-              </Switch>
+              <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+              </Routes>
           </div>
       );
   }
