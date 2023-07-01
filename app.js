@@ -1,13 +1,61 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
-
 const File = require('./File');
+const multer = require('multer');
+const path = require('path');
+
+// Configurarea multer pentru a salva fișierele încărcate în directorul 'uploads'
+const storage = multer.diskStorage({
+  destination: 'uploads/',
+  filename: (req, file, callback) => {
+    const originalName = file.originalname;
+    callback(null, originalName);
+  }
+});
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, callback) => {
+    const allowedExtensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.dwg'];
+    const ext = path.extname(file.originalname);
+    if (!allowedExtensions.includes(ext)) {
+      return callback(new Error('Only PDF, DOC, DOCX, XLS, XLSX, and DWG files are allowed.'));
+    }
+    callback(null, true);
+  },
+});
+
+
+// Ruta pentru servirea fișierului upload.html
+app.get('/upload.html', (req, res) => {
+  const filePath = path.join(__dirname, 'upload.html');
+  res.sendFile(filePath);
+});
 
 // Ruta pentru încărcarea unui fișier PDF
-app.post('/upload', (req, res) => {
-  // Procesează cererea de încărcare a fișierului aici
-  // Salvează informațiile despre fișier în baza de date
+app.post('/upload', upload.single('file'), (req, res) => {
+  if (req.file) {
+    // Obține informațiile despre fișier din obiectul 'req.file'
+    const { originalname, filename, path } = req.file;
+
+    // Construiește un nou obiect 'file' pe baza modelului 'File'
+    const newFile = new File({
+      filename: originalname,
+      url: `/uploads/${filename}`
+    });
+
+    // Salvează noul obiect 'file' în baza de date
+    newFile.save()
+      .then(() => {
+        res.status(200).json({ message: 'File uploaded successfully!' });
+      })
+      .catch((error) => {
+        res.status(500).json({ error: 'An error occurred while saving the file.' });
+      });
+  } else {
+    res.status(400).json({ error: 'No file uploaded.' });
+  }
 });
 
 // Ruta pentru obținerea tuturor fișierelor PDF
