@@ -44,7 +44,7 @@ const upload = multer({
   },
 }).array('file', 10);
 
-app.get('/upload.html', (req, res) => {
+app.get('/upload', (req, res) => {
   const filePath = path.join(__dirname, 'upload.html');
   res.sendFile(filePath);
 });

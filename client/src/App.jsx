@@ -8,8 +8,7 @@ import Contact from './components/Contact';
 import Upload from './components/Upload';
 import FileList from './components/FileList';
 import FolderList from './components/FolderList';
-
-
+import UploadPage from './components/UploadPage';
 
 class App extends React.Component {
   render() {
@@ -24,6 +23,7 @@ class App extends React.Component {
                   <Route path="/Upload" element={<Upload />} />
                   <Route path="/files" element={<FileList />} />
                   <Route path="/folders" element={<FolderList />} />
+                  <Route path="/upload" element={<UploadPage />} />
               </Routes>
           </div>
       );
