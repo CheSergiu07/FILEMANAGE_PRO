@@ -1,0 +1,16 @@
+{
+  "name": "filemanager-pro",
+  "version": "1.0.0",
+  "description": "manage pdf files",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sergiu Chereches",
+  "license": "ISC",
+  "keywords": [],
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.3.1"
+  }
+}
