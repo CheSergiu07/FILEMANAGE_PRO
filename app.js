@@ -5,6 +5,20 @@ const File = require('./File');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+
+const createDirectories = () => {
+  const baseDirectory = 'uploads';
+  const classDirectories = ['CL5', 'CL6', 'CL7', 'CL8', 'CL9', 'CL10', 'CL11', 'CL12'];
+
+  for (const classDirectory of classDirectories) {
+    for (let i = 1; i <= 100; i++) {
+      const dirPath = path.join(__dirname, baseDirectory, classDirectory, i.toString());
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+  }
+};
+
+createDirectories();
 const cors = require('cors');
 
 // Permitere CORS pentru toate cererile
@@ -38,11 +52,22 @@ app.get('/upload.html', (req, res) => {
 app.post('/upload', upload, (req, res) => {
   if (req.files) {
     req.files.forEach(file => {
-      const { originalname, filename } = file;
+      const { originalname, filename, path: filePath } = file;
+
+      const classDirectory = req.body.classDirectory;
+      const subDirectory = req.body.subDirectory;
+
+      // Muta fisierul in directorul corespunzator
+      if (isNaN(subDirectory) || subDirectory < 1 || subDirectory > 100) {
+        return res.status(400).json({ error: 'Invalid subdirectory.' });
+      }
+      
+      const newPath = path.join(__dirname, 'uploads', classDirectory, subDirectory, filename);
+      fs.renameSync(filePath, newPath);
 
       const newFile = new File({
         filename: originalname,
-        url: `/uploads/${filename}`
+        url: `/uploads/${classDirectory}/${subDirectory}/${filename}`
       });
 
       newFile.save()
@@ -64,7 +89,7 @@ app.get('/files', (req, res) => {
       res.status(200).json(files);
     })
     .catch(error => {
-      res.status(500).json({ error: 'An error occurred while getting the files.' });
+      res.status(500).json({ error: 'A apărut o eroare la obținerea fișierelor.' });
     });
 });
 

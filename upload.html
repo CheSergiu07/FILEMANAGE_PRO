@@ -7,8 +7,22 @@
   <h1>FileManager</h1>
 
   <h2>Încărcare fișier</h2>
-    <form action="http://localhost:3001/upload" method="post" enctype="multipart/form-data">
+  <form action="http://localhost:3001/upload" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.dwg" multiple />
+    
+    <select name="classDirectory">
+      <option value="CL5">CL5</option>
+      <option value="CL6">CL6</option>
+      <option value="CL7">CL7</option>
+      <option value="CL8">CL8</option>
+      <option value="CL9">CL9</option>
+      <option value="CL10">CL10</option>
+      <option value="CL11">CL11</option>
+      <option value="CL12">CL12</option>
+    </select>
+  
+    <input type="number" min="1" max="100" name="subDirectory">
+  
     <input type="submit" value="Upload" />
   </form>
 
