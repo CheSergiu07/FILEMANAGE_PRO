@@ -1,7 +1,66 @@
 <!DOCTYPE html>
-<form action="http://localhost:3001/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" accept=".pdf" />
+<html>
+<head>
+  <title>FileManager</title>
+</head>
+<body>
+  <h1>FileManager</h1>
+
+  <h2>Încărcare fișier</h2>
+    <form action="http://localhost:3001/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.dwg" multiple />
     <input type="submit" value="Upload" />
   </form>
+
+  <h2>Listă fișiere</h2>
+  <ul id="fileList"></ul>
+
+  <script>
+    // Obține lista fișierelor de la server și afișează-o în pagina HTML
+    fetch('http://localhost:3001/files')
+      .then(response => response.json())
+      .then(files => {
+        const fileList = document.getElementById('fileList');
+        files.forEach(file => {
+          const listItem = document.createElement('li');
+
+          // Adaugă numele fișierului și butoanele de descărcare și ștergere
+          listItem.innerHTML = `
+            <span>${file.filename}</span>
+            <button onclick="downloadFile('${file._id}')">Descarcă</button>
+            <button onclick="deleteFile('${file._id}')">Șterge</button>
+          `;
+
+          fileList.appendChild(listItem);
+        });
+      })
+      .catch(error => {
+        console.error('An error occurred while fetching the file list:', error);
+      });
+
+    // Funcția pentru descărcarea unui fișier
+    function downloadFile(fileId) {
+      window.location.href = `http://localhost:3001/files/${fileId}`;
+    }
+
+    // Funcția pentru ștergerea unui fișier
+    function deleteFile(fileId) {
+      if (confirm('Sigur doriți să ștergeți fișierul?')) {
+        fetch(`http://localhost:3001/files/${fileId}`, { method: 'DELETE' })
+          .then(response => response.json())
+          .then(result => {
+            alert(result.message);
+            // Reîncarcă lista fișierelor după ștergere
+            location.reload();
+          })
+          .catch(error => {
+            console.error('An error occurred while deleting the file:', error);
+          });
+      }
+    }
+  </script>
+</body>
+</html>
+
   
   

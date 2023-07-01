@@ -4,8 +4,12 @@ const app = express();
 const File = require('./File');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+const cors = require('cors');
 
-// Configurarea multer pentru a salva fișierele încărcate în directorul 'uploads'
+// Permitere CORS pentru toate cererile
+app.use(cors());
+
 const storage = multer.diskStorage({
   destination: 'uploads/',
   filename: (req, file, callback) => {
@@ -24,56 +28,94 @@ const upload = multer({
     }
     callback(null, true);
   },
-});
+}).array('file', 10);
 
-
-// Ruta pentru servirea fișierului upload.html
 app.get('/upload.html', (req, res) => {
   const filePath = path.join(__dirname, 'upload.html');
   res.sendFile(filePath);
 });
 
-// Ruta pentru încărcarea unui fișier PDF
-app.post('/upload', upload.single('file'), (req, res) => {
-  if (req.file) {
-    // Obține informațiile despre fișier din obiectul 'req.file'
-    const { originalname, filename, path } = req.file;
+app.post('/upload', upload, (req, res) => {
+  if (req.files) {
+    req.files.forEach(file => {
+      const { originalname, filename } = file;
 
-    // Construiește un nou obiect 'file' pe baza modelului 'File'
-    const newFile = new File({
-      filename: originalname,
-      url: `/uploads/${filename}`
-    });
-
-    // Salvează noul obiect 'file' în baza de date
-    newFile.save()
-      .then(() => {
-        res.status(200).json({ message: 'File uploaded successfully!' });
-      })
-      .catch((error) => {
-        res.status(500).json({ error: 'An error occurred while saving the file.' });
+      const newFile = new File({
+        filename: originalname,
+        url: `/uploads/${filename}`
       });
+
+      newFile.save()
+        .then(() => {
+          res.status(200).json({ message: 'File uploaded successfully!' });
+        })
+        .catch((error) => {
+          res.status(500).json({ error: 'An error occurred while saving the file.' });
+        });
+    });
   } else {
-    res.status(400).json({ error: 'No file uploaded.' });
+    res.status(400).json({ error: 'No files uploaded.' });
   }
 });
 
-// Ruta pentru obținerea tuturor fișierelor PDF
 app.get('/files', (req, res) => {
-  // Obține toate fișierele din baza de date și le trimite ca răspuns
+  File.find()
+    .then(files => {
+      res.status(200).json(files);
+    })
+    .catch(error => {
+      res.status(500).json({ error: 'An error occurred while getting the files.' });
+    });
 });
 
-// Ruta pentru descărcarea unui fișier PDF specific
 app.get('/files/:id', (req, res) => {
-  // Obține fișierul specificat din baza de date și trimite-l ca răspuns
+  const id = req.params.id;
+
+  File.findById(id)
+    .then(file => {
+      if (!file) {
+        return res.status(404).json({ error: 'File not found.' });
+      }
+
+      const filePath = path.join(__dirname, 'uploads', file.filename);
+      res.download(filePath, file.filename, (err) => {
+        if (err) {
+          res.status(500).json({ error: 'An error occurred while downloading the file.' });
+        }
+      });
+    })
+    .catch(error => {
+      res.status(500).json({ error: 'An error occurred while getting the file.' });
+    });
 });
 
-// Ruta pentru ștergerea unui fișier PDF specific
 app.delete('/files/:id', (req, res) => {
-  // Șterge fișierul specificat din baza de date
+  const id = req.params.id;
+
+  File.findByIdAndRemove(id)
+    .then(file => {
+      if (!file) {
+        return res.status(404).json({ error: 'File not found.' });
+      }
+
+      const filePath = path.join(__dirname, 'uploads', file.filename);
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          res.status(500).json({ error: 'An error occurred while deleting the file.' });
+        } else {
+          res.status(200).json({ message: 'File deleted successfully!' });
+        }
+      });
+    })
+    .catch(error => {
+      res.status(500).json({ error: 'An error occurred while deleting the file.' });
+    });
 });
 
-
+app.get('/files.html', (req, res) => {
+  const filePath = path.join(__dirname, 'files.html');
+  res.sendFile(filePath);
+});
 
 const port = process.env.PORT || 3001;
 
