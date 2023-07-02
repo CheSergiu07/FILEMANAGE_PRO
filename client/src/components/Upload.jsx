@@ -1,9 +1,7 @@
 import React from 'react';
 
-function UploadButton({ handleUpload }) {
-  return (
-    <button onClick={handleUpload}>Upload</button>
-  );
+const Upload = () => {
+    return <h1>Upload Page</h1>;
 }
 
-export default UploadButton;
+export default Upload;

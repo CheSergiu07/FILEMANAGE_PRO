@@ -151,7 +151,7 @@ mongoose.connect('mongodb://localhost:27017/filemanage_pdf', { useNewUrlParser: 
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.send('Hello World!');
 });
 
 app.listen(port, () => {

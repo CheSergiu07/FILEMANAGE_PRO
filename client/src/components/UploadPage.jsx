@@ -30,6 +30,7 @@ const UploadPage = () => {
       });
   };
 
+  <button onClick={handleUploadButtonClick}>Upload</button>
   const handleUploadButtonClick = () => {
     fetch('/upload')
         .then(response => response.text())
@@ -38,7 +39,7 @@ const UploadPage = () => {
         });
 };
 
-    // Restul codului (downloadFile, deleteFile, etc.)
+  // Restul codului (downloadFile, deleteFile, etc.)
   // ...
 
   return (
@@ -52,7 +53,7 @@ const UploadPage = () => {
         </select>
         <input type="submit" value="Upload" />
       </form>
-      <button onClick={handleUploadButtonClick}>Upload</button>
+
       {/* Restul codului HTML pentru afișarea listei de fișiere */}
     </div>
   );
