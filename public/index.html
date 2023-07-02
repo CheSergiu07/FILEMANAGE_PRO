@@ -12,9 +12,23 @@
 <body>
   <div id="root"></div>
   <!-- Include React and ReactDOM libraries -->
-  <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script>
+    const { createRoot, useEffect } = window.ReactDOM;
+
+    function AppWithCallbackAfterRender() {
+      useEffect(() => {
+        console.log('rendered');
+      });
+
+      return React.createElement(App, { tab: 'home' });
+    }
+
+    const container = document.getElementById('root');
+    const root = createRoot(container);
+    root.render(React.createElement(AppWithCallbackAfterRender));
+  </script>
 </body>
 
 </html>
-

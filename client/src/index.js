@@ -1,21 +1,17 @@
-// index.jsx
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter as Router } from 'react-router-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+const express = require('express');
+const cors = require('cors');
 
-const root = document.getElementById('root');
+const app = express();
 
-if (root !== null) {
-  createRoot(root).render(
-    <React.StrictMode>
-      <Router>
-        <App />
-      </Router>
-    </React.StrictMode>
-  );
-}
+// Permită cereri din originea http://localhost:3000
+app.use(cors({
+  origin: 'http://localhost:3000',
+}));
 
-reportWebVitals();
+// Restul configurației serverului Node...
+// ...
+
+// Ascultă pe portul 3001
+app.listen(3001, () => {
+  console.log('Serverul Node rulează pe portul 3001');
+});
